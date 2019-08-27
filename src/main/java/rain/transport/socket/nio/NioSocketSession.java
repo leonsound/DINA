@@ -42,8 +42,8 @@ import rain.transport.socket.SocketSessionConfig;
  *
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
-class NioSocketSession extends NioSession {
-    static final TransportMetadata METADATA = new DefaultTransportMetadata("nio", "socket", false, true,
+public class NioSocketSession extends NioSession {
+	public static final TransportMetadata METADATA = new DefaultTransportMetadata("nio", "socket", false, true,
             InetSocketAddress.class, SocketSessionConfig.class, IoBuffer.class);
 
     /**

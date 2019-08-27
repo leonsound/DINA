@@ -451,18 +451,15 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
             while (selectable) {
                 try {
                 	System.out.println(Thread.currentThread().getName()+"accept.... selectable:"+ selectable);
-                    // Process the bound sockets to this acceptor.
-                    // this actually sets the selector to OP_ACCEPT,
-                    // and binds to the port on which this class will
-                    // listen on. We do that before the select because 
-                    // the registerQueue containing the new handler is
-                    // already updated at this point.
+                    // Process the bound sockets to this acceptor. this actually sets the selector to OP_ACCEPT, and binds to the port on which this class will listen on.
+                	// We do that before the select because  the registerQueue containing the new handler is already updated at this point.
                     nHandles += registerHandles();
 
                     // Detect if we have some keys ready to be processed
                     // The select() will be woke up if some new connection
                     // have occurred, or if the selector has been explicitly
                     // woke up
+                    // 如果没有连接， 阻塞当前线程
                     int selected = select();
 
                     // Now, if the number of registered handles is 0, we can
@@ -585,35 +582,35 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
                 // We create a temporary map to store the bound handles,
                 // as we may have to remove them all if there is an exception
                 // during the sockets opening.
-                Map<SocketAddress, ServerSocketChannel> newHandles = new ConcurrentHashMap<>();
+                Map<SocketAddress, ServerSocketChannel> channels = new ConcurrentHashMap<>();
                 List<SocketAddress> localAddresses = future.getLocalAddresses();
 
                 try {
                     // Process all the addresses
                     for (SocketAddress a : localAddresses) {
-                    	ServerSocketChannel handle = open(a);
-                        newHandles.put(localAddress(handle), handle);
+                    	ServerSocketChannel channel = open(a);
+                    	channels.put(localAddress(channel), channel);
                     }
 
                     // Everything went ok, we can now update the map storing
                     // all the bound sockets.
-                    boundHandles.putAll(newHandles);
+                    boundHandles.putAll(channels);
 
                     // and notify.
                     future.setDone();
                     
-                    return newHandles.size();
+                    return channels.size();
                 } catch (Exception e) {
                     // We store the exception in the future
                     future.setException(e);
                 } finally {
                     // Roll back if failed to bind all addresses.
                     if (future.getException() != null) {
-                        for (ServerSocketChannel handle : newHandles.values()) {
+                        for (ServerSocketChannel channel : channels.values()) {
                             try {
-                                close(handle);
+                                close(channel);
                             } catch (Exception e) {
-                                ExceptionMonitor.getInstance().exceptionCaught(e);
+                                e.printStackTrace();
                             }
                         }
 

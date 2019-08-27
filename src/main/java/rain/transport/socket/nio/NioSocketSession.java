@@ -36,6 +36,7 @@ import rain.core.session.IoSession;
 import rain.filter.ssl.SslFilter;
 import rain.transport.socket.AbstractSocketSessionConfig;
 import rain.transport.socket.SocketSessionConfig;
+import rain.transport.socket.mynio.MyNioSocketConnector;
 
 /**
  * An {@link IoSession} for socket transport (TCP/IP).
@@ -55,6 +56,12 @@ public class NioSocketSession extends NioSession {
      * @param channel the used channel
      */
     public NioSocketSession(IoService service, IoProcessor<NioSession> processor, SocketChannel channel) {
+        super(processor, service, channel);
+        config = new SessionConfigImpl();
+        config.setAll(service.getSessionConfig());
+    }
+    
+    public NioSocketSession(MyNioSocketConnector service, IoProcessor<NioSession> processor, SocketChannel channel) {
         super(processor, service, channel);
         config = new SessionConfigImpl();
         config.setAll(service.getSessionConfig());

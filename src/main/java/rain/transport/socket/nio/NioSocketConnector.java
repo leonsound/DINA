@@ -44,8 +44,7 @@ import rain.transport.socket.SocketSessionConfig;
  *
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
-public final class NioSocketConnector extends AbstractPollingIoConnector<NioSession, SocketChannel> implements
-SocketConnector {
+public final class NioSocketConnector extends AbstractPollingIoConnector<NioSession, SocketChannel>  {
 
     private volatile Selector selector;
 
@@ -162,11 +161,7 @@ SocketConnector {
     public InetSocketAddress getDefaultRemoteAddress() {
         return (InetSocketAddress) super.getDefaultRemoteAddress();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+    
     public void setDefaultRemoteAddress(InetSocketAddress defaultRemoteAddress) {
         super.setDefaultRemoteAddress(defaultRemoteAddress);
     }

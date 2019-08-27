@@ -37,7 +37,7 @@ import rain.filter.FilterEvent;
  *
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
-public abstract class AbstractIoConnector extends AbstractIoService implements IoConnector {
+public abstract class AbstractIoConnector extends AbstractIoService {
     /**
      * The minimum timeout value that is supported (in milliseconds).
      */
@@ -91,39 +91,21 @@ public abstract class AbstractIoConnector extends AbstractIoService implements I
         this.connectTimeoutCheckInterval = minimumConnectTimeout;
     }
 
-    /**
-     * @deprecated Take a look at <tt>getConnectTimeoutMillis()</tt>
-     */
-    @Deprecated
-    @Override
-    public final int getConnectTimeout() {
-        return (int) connectTimeoutInMillis / 1000;
-    }
+ 
 
     /**
      * {@inheritDoc}
      */
-    @Override
     public final long getConnectTimeoutMillis() {
         return connectTimeoutInMillis;
     }
 
-    /**
-     * @deprecated
-     *  Take a look at <tt>setConnectTimeoutMillis(long)</tt>
-     */
-    @Deprecated
-    @Override
-    public final void setConnectTimeout(int connectTimeout) {
-
-        setConnectTimeoutMillis(connectTimeout * 1000L);
-    }
+    
 
     /**
      * Sets the connect timeout value in milliseconds.
      * 
      */
-    @Override
     public final void setConnectTimeoutMillis(long connectTimeoutInMillis) {
         if (connectTimeoutInMillis <= connectTimeoutCheckInterval) {
             this.connectTimeoutCheckInterval = connectTimeoutInMillis;
@@ -131,34 +113,22 @@ public abstract class AbstractIoConnector extends AbstractIoService implements I
         this.connectTimeoutInMillis = connectTimeoutInMillis;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+  
     public SocketAddress getDefaultRemoteAddress() {
         return defaultRemoteAddress;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+ 
     public final void setDefaultLocalAddress(SocketAddress localAddress) {
         defaultLocalAddress = localAddress;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+ 
     public final SocketAddress getDefaultLocalAddress() {
         return defaultLocalAddress;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+ 
     public final void setDefaultRemoteAddress(SocketAddress defaultRemoteAddress) {
         if (defaultRemoteAddress == null) {
             throw new IllegalArgumentException("defaultRemoteAddress");
@@ -171,10 +141,7 @@ public abstract class AbstractIoConnector extends AbstractIoService implements I
         this.defaultRemoteAddress = defaultRemoteAddress;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+ 
     public final ConnectFuture connect() {
         SocketAddress remoteAddress = getDefaultRemoteAddress();
         
@@ -185,10 +152,7 @@ public abstract class AbstractIoConnector extends AbstractIoService implements I
         return connect(remoteAddress, null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+ 
     public ConnectFuture connect(IoSessionInitializer<? extends ConnectFuture> sessionInitializer) {
         SocketAddress remoteAddress = getDefaultRemoteAddress();
         
@@ -199,35 +163,23 @@ public abstract class AbstractIoConnector extends AbstractIoService implements I
         return connect(remoteAddress, null, sessionInitializer);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+ 
     public final ConnectFuture connect(SocketAddress remoteAddress) {
         return connect(remoteAddress, null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+  
     public ConnectFuture connect(SocketAddress remoteAddress,
             IoSessionInitializer<? extends ConnectFuture> sessionInitializer) {
         return connect(remoteAddress, null, sessionInitializer);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+ 
     public ConnectFuture connect(SocketAddress remoteAddress, SocketAddress localAddress) {
         return connect(remoteAddress, localAddress, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+ 
     public final ConnectFuture connect(SocketAddress remoteAddress, SocketAddress localAddress,
             IoSessionInitializer<? extends ConnectFuture> sessionInitializer) {
         if (isDisposing()) {

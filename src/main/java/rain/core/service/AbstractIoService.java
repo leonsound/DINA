@@ -483,7 +483,7 @@ public abstract class AbstractIoService implements IoService {
         executor.execute(new NamePreservingRunnable(worker, actualThreadName));
     }
 
-    protected final void initSession(IoSession session, IoFuture future, IoSessionInitializer sessionInitializer) {
+    protected final void initSession(IoSession session, IoFuture future) {
         // Update lastIoTime if needed.
         if (stats.getLastReadTime() == 0) {
             stats.setLastReadTime(getActivationTime());
@@ -519,10 +519,7 @@ public abstract class AbstractIoService implements IoService {
             // DefaultIoFilterChain will notify the future. (We support ConnectFuture only for now).
             session.setAttribute(DefaultIoFilterChain.SESSION_CREATED_FUTURE, future);
         }
-
-        if (sessionInitializer != null) {
-            sessionInitializer.initializeSession(session, future);
-        }
+    
 
         finishSessionInitialization0(session, future);
     }

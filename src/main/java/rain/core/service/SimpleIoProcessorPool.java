@@ -35,49 +35,7 @@ import rain.core.session.AbstractIoSession;
 import rain.core.session.AttributeKey;
 import rain.core.session.IoSession;
 import rain.core.write.WriteRequest;
-
-/**
- * An {@link IoProcessor} pool that distributes {@link IoSession}s into one or more
- * {@link IoProcessor}s. Most current transport implementations use this pool internally
- * to perform better in a multi-core environment, and therefore, you won't need to 
- * use this pool directly unless you are running multiple {@link IoService}s in the
- * same JVM.
- * <p>
- * If you are running multiple {@link IoService}s, you could want to share the pool
- * among all services.  To do so, you can create a new {@link SimpleIoProcessorPool}
- * instance by yourself and provide the pool as a constructor parameter when you
- * create the services.
- * <p>
- * This pool uses Java reflection API to create multiple {@link IoProcessor} instances.
- * It tries to instantiate the processor in the following order:
- * <ol>
- * <li>A public constructor with one {@link ExecutorService} parameter.</li>
- * <li>A public constructor with one {@link Executor} parameter.</li>
- * <li>A public default constructor</li>
- * </ol>
- * The following is an example for the NIO socket transport:
- * <pre><code>
- * // Create a shared pool.
- * SimpleIoProcessorPool&lt;NioSession&gt; pool = 
- *         new SimpleIoProcessorPool&lt;NioSession&gt;(NioProcessor.class, 16);
- * 
- * // Create two services that share the same pool.
- * SocketAcceptor acceptor = new NioSocketAcceptor(pool);
- * SocketConnector connector = new NioSocketConnector(pool);
- * 
- * ...
- * 
- * // Release related resources.
- * connector.dispose();
- * acceptor.dispose();
- * pool.dispose();
- * </code></pre>
- * 
- * @author <a href="http://mina.apache.org">Apache MINA Project</a>
- * 
- * @param <S> the type of the {@link IoSession} to be managed by the specified
- *            {@link IoProcessor}.
- */
+ 
 public class SimpleIoProcessorPool<S extends AbstractIoSession> implements IoProcessor<S> {
     /** A logger for this class */
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleIoProcessorPool.class);
@@ -116,13 +74,7 @@ public class SimpleIoProcessorPool<S extends AbstractIoSession> implements IoPro
         this(processorType, null, DEFAULT_SIZE, null);
     }
 
-    /**
-     * Creates a new instance of SimpleIoProcessorPool with a defined
-     * number of IoProcessors in the pool
-     *
-     * @param processorType The type of IoProcessor to use
-     * @param size The number of IoProcessor in the pool
-     */
+   
     public SimpleIoProcessorPool(Class<? extends IoProcessor<S>> processorType, int size) {
         this(processorType, null, size, null);
     }

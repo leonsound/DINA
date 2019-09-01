@@ -8,7 +8,7 @@ import java.net.InetSocketAddress;
 import rain.core.future.ConnectFuture;
 import rain.filter.codec.ProtocolCodecFilter;
 import rain.filter.codec.textline.TextLineCodecFactory;
-import rain.transport.socket.mynio.MyNioSocketConnector;
+import rain.transport.socket.nio.NioSocketConnector;
 
 public class MinaClient {
 
@@ -28,7 +28,7 @@ public class MinaClient {
 	public static void newClient() throws InterruptedException {
 
 		// 第一步，建立一个connecter
-		MyNioSocketConnector connecter = new MyNioSocketConnector();
+		NioSocketConnector connecter = new NioSocketConnector();
 		// 第二步，设置消息处理的Handler，和服务端一模一样，实现IOHandler接口即可
 		connecter.setHandler(new MinaClientHandler());
 		// 第三步，设置拦截器，编码规则应该和服务端一样，即TextLineCodecFactory，除了mina自带的编码方式之外，还可以自己定义编码协议

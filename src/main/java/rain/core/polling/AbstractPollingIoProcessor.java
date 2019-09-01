@@ -648,21 +648,16 @@ public abstract class AbstractPollingIoProcessor<S extends AbstractIoSession> im
                                 assert processorRef.get() != this;
                                 break;
                             }
-
                             assert processorRef.get() != this;
-
                             if (!processorRef.compareAndSet(null, this)) {
                                 // startupProcessor won race, so must exit processor
                                 assert processorRef.get() != this;
                                 break;
                             }
-
                             assert processorRef.get() == this;
                         }
                     }
-
                     updateTrafficMask();
-
                     // Now, if we have had some incoming or outgoing events,
                     // deal with them
                     if (selected > 0) {
@@ -671,12 +666,10 @@ public abstract class AbstractPollingIoProcessor<S extends AbstractIoSession> im
                         process();
                     }
                     System.out.println("selected:"+selected);
-                    
                     // Write the pending requests
                     long currentTime = System.currentTimeMillis();
                     System.out.println("----currentTime:"+currentTime);
                     flush(currentTime);
-                    
                     // Last, not least, send Idle events to the idle sessions
                     notifyIdleSessions(currentTime);
                     

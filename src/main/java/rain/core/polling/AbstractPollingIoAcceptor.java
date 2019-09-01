@@ -99,125 +99,26 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
      */
     protected int backlog = 50;
 
-    /**
-     * Constructor for {@link AbstractPollingIoAcceptor}. You need to provide a default
-     * session configuration, a class of {@link IoProcessor} which will be instantiated in a
-     * {@link SimpleIoProcessorPool} for better scaling in multiprocessor systems. The default
-     * pool size will be used.
-     * 
-     * @see SimpleIoProcessorPool
-     * 
-     * @param sessionConfig
-     *            the default configuration for the managed {@link IoSession}
-     * @param processorClass a {@link Class} of {@link IoProcessor} for the associated {@link IoSession}
-     *            type.
-     */
     protected AbstractPollingIoAcceptor(IoSessionConfig sessionConfig, Class<? extends IoProcessor<S>> processorClass) {
-        this(sessionConfig, null, new SimpleIoProcessorPool<S>(processorClass), true, null);
+        this(sessionConfig, null, new SimpleIoProcessorPool<S>(processorClass), true);
     }
-
-    /**
-     * Constructor for {@link AbstractPollingIoAcceptor}. You need to provide a default
-     * session configuration, a class of {@link IoProcessor} which will be instantiated in a
-     * {@link SimpleIoProcessorPool} for using multiple thread for better scaling in multiprocessor
-     * systems.
-     * 
-     * @see SimpleIoProcessorPool
-     * 
-     * @param sessionConfig
-     *            the default configuration for the managed {@link IoSession}
-     * @param processorClass a {@link Class} of {@link IoProcessor} for the associated {@link IoSession}
-     *            type.
-     * @param processorCount the amount of processor to instantiate for the pool
-     */
     protected AbstractPollingIoAcceptor(IoSessionConfig sessionConfig, Class<? extends IoProcessor<S>> processorClass,
             int processorCount) {
-        this(sessionConfig, null, new SimpleIoProcessorPool<S>(processorClass, processorCount), true, null);
+        this(sessionConfig, null, new SimpleIoProcessorPool<S>(processorClass, processorCount), true);
     }
-
-    /**
-     * Constructor for {@link AbstractPollingIoAcceptor}. You need to provide a default
-     * session configuration, a class of {@link IoProcessor} which will be instantiated in a
-     * {@link SimpleIoProcessorPool} for using multiple thread for better scaling in multiprocessor
-     * systems.
-     *
-     * @see SimpleIoProcessorPool
-     *
-     * @param sessionConfig
-     *            the default configuration for the managed {@link IoSession}
-     * @param processorClass a {@link Class} of {@link IoProcessor} for the associated {@link IoSession}
-     *            type.
-     * @param processorCount the amount of processor to instantiate for the pool
-     * @param selectorProvider The SelectorProvider to use
-     */
     protected AbstractPollingIoAcceptor(IoSessionConfig sessionConfig, Class<? extends IoProcessor<S>> processorClass,
             int processorCount, SelectorProvider selectorProvider ) {
-        this(sessionConfig, null, new SimpleIoProcessorPool<S>(processorClass, processorCount, selectorProvider), true, selectorProvider);
+        this(sessionConfig, null, new SimpleIoProcessorPool<S>(processorClass, processorCount, selectorProvider), true);
     }
-
-    /**
-     * Constructor for {@link AbstractPollingIoAcceptor}. You need to provide a default
-     * session configuration, a default {@link Executor} will be created using
-     * {@link Executors#newCachedThreadPool()}.
-     * 
-     * @see AbstractIoService
-     * 
-     * @param sessionConfig
-     *            the default configuration for the managed {@link IoSession}
-     * @param processor the {@link IoProcessor} for processing the {@link IoSession} of this transport, triggering
-     *            events to the bound {@link IoHandler} and processing the chains of {@link IoFilter}
-     */
     protected AbstractPollingIoAcceptor(IoSessionConfig sessionConfig, IoProcessor<S> processor) {
-        this(sessionConfig, null, processor, false, null);
+        this(sessionConfig, null, processor, false);
     }
-
-    /**
-     * Constructor for {@link AbstractPollingIoAcceptor}. You need to provide a
-     * default session configuration and an {@link Executor} for handling I/O
-     * events. If a null {@link Executor} is provided, a default one will be
-     * created using {@link Executors#newCachedThreadPool()}.
-     * 
-     * @see AbstractIoService#AbstractIoService(IoSessionConfig, Executor)
-     * 
-     * @param sessionConfig
-     *            the default configuration for the managed {@link IoSession}
-     * @param executor
-     *            the {@link Executor} used for handling asynchronous execution
-     *            of I/O events. Can be <code>null</code>.
-     * @param processor
-     *            the {@link IoProcessor} for processing the {@link IoSession}
-     *            of this transport, triggering events to the bound
-     *            {@link IoHandler} and processing the chains of
-     *            {@link IoFilter}
-     */
     protected AbstractPollingIoAcceptor(IoSessionConfig sessionConfig, Executor executor, IoProcessor<S> processor) {
-        this(sessionConfig, executor, processor, false, null);
+        this(sessionConfig, executor, processor, false);
     }
 
-    /**
-     * Constructor for {@link AbstractPollingIoAcceptor}. You need to provide a
-     * default session configuration and an {@link Executor} for handling I/O
-     * events. If a null {@link Executor} is provided, a default one will be
-     * created using {@link Executors#newCachedThreadPool()}.
-     * 
-     * @see #AbstractIoService(IoSessionConfig, Executor)
-     * 
-     * @param sessionConfig
-     *            the default configuration for the managed {@link IoSession}
-     * @param executor
-     *            the {@link Executor} used for handling asynchronous execution
-     *            of I/O events. Can be <code>null</code>.
-     * @param processor
-     *            the {@link IoProcessor} for processing the {@link IoSession}
-     *            of this transport, triggering events to the bound
-     *            {@link IoHandler} and processing the chains of
-     *            {@link IoFilter}
-     * @param createdProcessor
-     *            tagging the processor as automatically created, so it will be
-     *            automatically disposed
-     */
     private AbstractPollingIoAcceptor(IoSessionConfig sessionConfig, Executor executor, IoProcessor<S> processor,
-            boolean createdProcessor, SelectorProvider selectorProvider) {
+            boolean createdProcessor) {
         super(sessionConfig, executor);
 
         if (processor == null) {
@@ -229,7 +130,7 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
 
         try {
             // Initialize the selector
-            init(selectorProvider);
+            init();
 
             // The selector is now ready, we can switch the
             // flag to true so that incoming connection can be accepted
@@ -255,13 +156,6 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
      */
     protected abstract void init() throws Exception;
 
-    /**
-     * Initialize the polling system, will be called at construction time.
-     * 
-     * @param selectorProvider The Selector Provider that will be used by this polling acceptor
-     * @throws Exception any exception thrown by the underlying system calls
-     */
-    protected abstract void init(SelectorProvider selectorProvider) throws Exception;
 
     /**
      * Destroy the polling system, will be called when this {@link IoAcceptor}
@@ -288,7 +182,7 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
      *  during the last {@link #select()} call.
      * @return the list of server handles ready
      */
-    protected abstract Iterator<ServerSocketChannel> selectedHandles();
+    protected abstract Iterator<ServerSocketChannel> selectedChannels();
 
     /**
      * Open a server socket for a given local address.
@@ -453,7 +347,7 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
                 	System.out.println(Thread.currentThread().getName()+"accept.... selectable:"+ selectable);
                     // Process the bound sockets to this acceptor. this actually sets the selector to OP_ACCEPT, and binds to the port on which this class will listen on.
                 	// We do that before the select because  the registerQueue containing the new handler is already updated at this point.
-                    nHandles += registerHandles();
+                    nHandles += registerChannels();
 
                     // Detect if we have some keys ready to be processed
                     // The select() will be woke up if some new connection
@@ -484,7 +378,7 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
                         // We have some connection request, let's process
                         // them here.
                     	System.out.println(Thread.currentThread().getName()+"We have some connection request, let's process");
-                        processHandles(selectedHandles());
+                    	acceptChannels(selectedChannels());
                     }
 
                     // check to see if any cancellation request has been made.
@@ -537,11 +431,11 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
          * and passing the session object to the SocketIoProcessor class.
          */
         @SuppressWarnings("unchecked")
-        private void processHandles(Iterator<ServerSocketChannel> handles) throws Exception {
-            while (handles.hasNext()) {
+        private void acceptChannels(Iterator<ServerSocketChannel> channel) throws Exception {
+            while (channel.hasNext()) {
             	System.out.println(Thread.currentThread().getName()+"===processHandles");
-            	ServerSocketChannel handle = handles.next();
-                handles.remove();
+            	ServerSocketChannel handle = channel.next();
+            	channel.remove();
 
                 // Associates a new created connection to a processor,
                 // and get back a session
@@ -551,7 +445,7 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
                     continue;
                 }
                 
-                initSession(session, null, null);
+                initSession(session, null);
 
                 // add the session to the SocketIoProcessor
                 session.getProcessor().add(session);
@@ -567,7 +461,7 @@ public abstract class AbstractPollingIoAcceptor<S extends AbstractIoSession, Ser
          * Bind to listen port
          * Registers OP_ACCEPT for selector
          */
-        private int registerHandles() {
+        private int registerChannels() {
             for (;;) {
             	 System.out.println(Thread.currentThread().getName() +"-- registerHandles");
                 // The register queue contains the list of services to manage

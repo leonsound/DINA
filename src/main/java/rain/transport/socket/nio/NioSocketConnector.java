@@ -210,9 +210,6 @@ public final class NioSocketConnector extends AbstractPollingIoConnector<NioSess
         handle.close();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean finishConnect(SocketChannel handle) throws Exception {
         if (handle.finishConnect()) {
@@ -228,9 +225,6 @@ public final class NioSocketConnector extends AbstractPollingIoConnector<NioSess
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected SocketChannel newHandle(SocketAddress localAddress) throws Exception {
         SocketChannel ch = SocketChannel.open();

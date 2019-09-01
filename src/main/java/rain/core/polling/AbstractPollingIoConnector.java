@@ -370,7 +370,7 @@ public abstract class AbstractPollingIoConnector<S extends AbstractIoSession, H>
             if (connect(handle, remoteAddress)) {
                 ConnectFuture future = new DefaultConnectFuture();
                 S session = newSession(processor, handle);
-                initSession(session, future, sessionInitializer);
+                initSession(session, future);
                 // Forward the remaining process to the IoProcessor.
                 session.getProcessor().add(session);
                 success = true;
@@ -570,7 +570,7 @@ public abstract class AbstractPollingIoConnector<S extends AbstractIoSession, H>
                 try {
                     if (finishConnect(handle)) {
                         S session = newSession(processor, handle);
-                        initSession(session, connectionRequest, connectionRequest.getSessionInitializer());
+                        initSession(session, connectionRequest );
                         // Forward the remaining process to the IoProcessor.
                         session.getProcessor().add(session);
                         nHandles++;
